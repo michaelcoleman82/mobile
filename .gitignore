@@ -62,3 +62,4 @@ node_modules
 
 /__tests__/
 index.ios.js
+.serverless
