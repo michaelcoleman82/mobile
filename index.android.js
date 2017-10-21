@@ -3,8 +3,10 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Image
 } from 'react-native'
+import App from './src/App'
 const {AWSIoTData:{device}} = require('./aws-iot-device-sdk-js-react-native')
 
 
@@ -18,7 +20,7 @@ const subscribe =  cb =>
       ...keys
     })
     client.on('connect', ()=> {
-      console.log('connected')
+      cb(null, true)
       client.subscribe('sheet_state')
     })
     client.on('message', (_, message)=> cb(String.fromCharCode(...message)) )
@@ -26,54 +28,25 @@ const subscribe =  cb =>
   })
 
 
+
+
 export default class EBWU extends Component {
 
   constructor() {
     super()
-    subscribe( sheetState => this.setState({sheetState}))
+    subscribe(
+      (sheetState, connected) => this.setState({sheetState, connected})
+    )
   }
 
 
-  state = {sheetState:''}
-
+  state = {sheetState:'', connected:false}
 
   render() {
-
-    const {sheetState} = this.state
-
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to EBWU!
-        </Text>
-        <Text style={styles.instructions}>
-          Sheet State:
-        </Text>
-        <Text style={[styles.instructions, {fontSize: 32}]}>
-          {sheetState}
-        </Text>
-      </View>
-    );
+    const {sheetState, connected} = this.state
+    return <App {...{connected, sheetState}}/>
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-})
 
 AppRegistry.registerComponent('EBWU', () => EBWU)

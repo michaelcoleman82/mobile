@@ -9,14 +9,17 @@
 	},
 	"dependencies": {
 		"react": "16.0.0-alpha.12",
-		"react-native": "0.48.4"
+		"react-native": "0.48.4",
+		"react-native-svg": "^5.4.2",
+		"react-native-vector-icons": "^4.4.2",
+		"react-router-native": "^4.2.0"
 	},
 	"devDependencies": {
 		"aws-sdk": "^2.126.0",
 		"babel-jest": "21.2.0",
 		"babel-preset-react-native": "4.0.0",
 		"jest": "21.2.1",
-		"react-native-aws-iot-device-shadows": "^1.0.0",
+		"react-native-linear-gradient": "^2.3.0",
 		"react-test-renderer": "16.0.0-alpha.12",
 		"serverless": "^1.23.0"
 	},
