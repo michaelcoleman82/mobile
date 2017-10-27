@@ -6,7 +6,7 @@ const {layout:{row}, typography:{p}}= require('../styles')
 
 
 
-export default ({options, getChoice, choice})=>{
+export default ({options, getChoice, choice, style})=>{
   const s = StyleSheet.create({
     container:{
       paddingVertical:3,
@@ -29,7 +29,7 @@ export default ({options, getChoice, choice})=>{
       width:10,
     }
   })
-  return <View>
+  return <View style={style}>
     {options.map( (o,i)=> <TouchableOpacity
       onPress={()=>getChoice(o)}
       style={s.container}

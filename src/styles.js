@@ -12,7 +12,7 @@ export const layout ={
 }
 
 export const typography ={
-  p:{    
+  p:{
     fontFamily: 'Montserrat-Light',
     color:'white',
   }

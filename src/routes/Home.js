@@ -11,9 +11,8 @@ class extends Component{
 
   handlePress=()=>{
     const {history:{push}} = this.props
-    // console.log(push)
     this.setState({strokeOpacity:1})
-    push('/schedule')
+    push('/bed-settings')
 
   }
 

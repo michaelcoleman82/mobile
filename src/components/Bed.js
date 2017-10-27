@@ -1,55 +1,137 @@
 import React from "react"
-import {View} from 'react-native'
-import Svg, {  Path, G, Text } from "react-native-svg";
-const {palette:{blue, sunshine, navy}} = require('../styles')
+import {View, StyleSheet, TouchableOpacity} from 'react-native'
+import Svg, {  Rect, G, Path, Circle } from "react-native-svg"
+import {Text} from '.'
+const {palette:{blue, sunshine, navy}, layout:{row}} = require('../styles')
+import {frame} from '../path-descriptions/bed'
+import left from '../path-descriptions/arrow.json'
+import right from '../path-descriptions/arrow-right.json'
 
-const SideA = ()=> <G x='10' y='10'>
-          <Path  fill={navy}  d="M 0 20C 0 8.9543 8.9543 0 20 0L 112 0L 112 297L 20 297C 8.9543 297 0 288.046 0 277L 0 20Z"/>
-          <Path fill='#E0E0E0'    d="M 112 0L 113 0L 113 -1L 112 -1L 112 0ZM 112 297L 112 298L 113 298L 113 297L 112 297ZM 20 1L 112 1L 112 -1L 20 -1L 20 1ZM 111 0L 111 297L 113 297L 113 0L 111 0ZM 112 296L 20 296L 20 298L 112 298L 112 296ZM 1 277L 1 20L -1 20L -1 277L 1 277ZM 20 -1C 8.40202 -1 -1 8.40202 -1 20L 1 20C 1 9.50659 9.50659 1 20 1L 20 -1ZM 20 296C 9.50659 296 1 287.493 1 277L -1 277C -1 288.598 8.40202 298 20 298L 20 296Z"/>
-          <Text x='40' y='120' fontSize={40} fontWeight='bold' fill={'white'} >A</Text>
+
+
+
+const Pillow = props=> <Rect
+    {...props}
+    y={15}
+    width={92}
+    height={45}
+    rx={8}
+    ry={8}
+    fill='none'
+    stroke='white'
+    strokeWidth={2}
+  />
+
+
+const SideA = () =><Path
+    y={2}
+    x={2}
+    fillOpacity={.5}
+    fill='white'
+    d='M 0 10C 0 4.47715 4.47715 0 10 0L 113 0L 113 226L 10 226C 4.47715 226 0 221.523 0 216L 0 10Z'
+  />
+const SideB = () =><Path
+    y={2}
+    x={115}
+    fillOpacity={.5}
+    fill='white'
+    d='M 0 0L 103 0C 108.523 0 113 4.47715 113 10L 113 216C 113 221.523 108.523 226 103 226L 0 226L 0 0Z'
+  />
+
+
+export default ({ebwuOn, mode, side ,style, swapSides})=> {
+
+  const s = StyleSheet.create({
+    label:{
+      ...row,
+      position:'absolute',
+      top:150, left:0, right: 0, bottom:0,
+      justifyContent: 'center',
+      zIndex:1,
+    },
+    swap:{
+      position:'absolute',
+      top:100, left:93, right: 0, bottom:0,
+      alignItems: 'center',
+      justifyContent:'center',
+      // zIndex:1,
+      height:40,
+      width:40,
+      borderRadius:20,
+      backgroundColor:'white',
+      elevation:5,
+    },
+    text:{
+      color:'rgba(255, 255, 255, 0.5)'
+    },
+    dual:{
+      ...row,
+      flex:1,
+      justifyContent:'space-around',
+    }
+  })
+
+  return <View style={style}>
+      <Svg width="230" height="230" >
+        { !ebwuOn
+          ? null
+          : mode=='none'
+            ? null
+            : mode==='single'
+            ? <G>
+                <SideA   />
+                <SideB  />
+              </G>
+            :  side=='A'
+                ? <SideB/>
+                : <SideA />
+                // : null
+        }
+        <G strokeOpacity={ebwuOn ? 1 : .3}
+          fill='none'
+          stroke='white'
+          strokeWidth={2}
+        >
+          <Rect
+            x={2}
+            y={2}
+            width={226}
+            height={226}
+            rx="10"
+            ry="10"
+          />
+          <Pillow x={15} />
+          <Pillow x={124}/>
         </G>
-
-const SideB = ()=> <G x='130' y='10'>
-          <Path fill={navy} id="path0_fill" d="M 111 20C 111 8.9543 102.046 0 91 0L 0 0L 0 297L 91 297C 102.046 297 111 288.046 111 277L 111 20Z"/>
-          <Path fill='#E0E0E0'  d="M 0 0L 0 -1L -1 -1L -1 0L 0 0ZM 0 297L -1 297L -1 298L 0 298L 0 297ZM 91 -1L 0 -1L 0 1L 91 1L 91 -1ZM -1 0L -1 297L 1 297L 1 0L -1 0ZM 0 298L 91 298L 91 296L 0 296L 0 298ZM 112 277L 112 20L 110 20L 110 277L 112 277ZM 91 1C 101.493 1 110 9.50659 110 20L 112 20C 112 8.40202 102.598 -1 91 -1L 91 1ZM 91 298C 102.598 298 112 288.598 112 277L 110 277C 110 287.493 101.493 296 91 296L 91 298Z"/>
-          <Text x='40' y='120' fontSize={40} fontWeight='bold' fill={'white'} >B</Text>
-        </G>
-
-
-export default ({width, height, style, sideA, sideB, sheetState}) => {
-
-
-
-
-  const frameConfig = [
-   {d: 'M 0 30C 0 13.4315 13.4315 0 30 0L 219 0C 235.569 0 249 13.4315 249 30L 249 287C 249 303.569 235.569 317 219 317L 30 317C 13.4315 317 0 303.569 0 287L 0 30Z', fillOpacity: 0.63},
-   {d: 'M0 30C0 13.431 13.431 0 30 0h189c16.569 0 30 13.431 30 30v257c0 16.569-13.431 30-30 30H30c-16.569 0-30-13.431-30-30V30zm242 0c0-11.046-8.954-20-20-20h-91v297h91c11.046 0 20-8.954 20-20V30zM30 10c-11.046 0-20 8.954-20 20v257c0 11.046 8.954 20 20 20h92V10H30z'},
-  ]
-
-  const pillowConfig=[
-    {d:'M 43.0422 0L 5.00135 0C 1.89571 0 -0.45865 2.80149 0.0759938 5.86076L 5.31885 35.8608C 5.73707 38.2538 7.81487 40 10.2442 40L 43.0422 40L 44.0046 40L 76.8027 40C 79.232 40 81.3098 38.2538 81.728 35.8608L 86.9709 5.86076C 87.5055 2.80149 85.1512 0 82.0455 0L 44.0046 0L 43.0422 0Z', fill:'white'},
-    {d:'M 5.31885 35.8608L 4.33378 36.0329L 5.31885 35.8608ZM 81.728 35.8608L 82.7131 36.0329L 81.728 35.8608ZM 5.00135 1L 43.0422 1L 43.0422 -1L 5.00135 -1L 5.00135 1ZM 6.30392 35.6886L 1.06106 5.68861L -0.909077 6.03292L 4.33378 36.0329L 6.30392 35.6886ZM 43.0422 39L 10.2442 39L 10.2442 41L 43.0422 41L 43.0422 39ZM 43.0422 41L 44.0046 41L 44.0046 39L 43.0422 39L 43.0422 41ZM 44.0046 41L 76.8027 41L 76.8027 39L 44.0046 39L 44.0046 41ZM 82.7131 36.0329L 87.9559 6.03292L 85.9858 5.68861L 80.743 35.6886L 82.7131 36.0329ZM 82.0455 -1L 44.0046 -1L 44.0046 1L 82.0455 1L 82.0455 -1ZM 44.0046 -1L 43.0422 -1L 43.0422 1L 44.0046 1L 44.0046 -1ZM 5.00135 -1C 1.27458 -1 -1.55065 2.36179 -0.909077 6.03292L 1.06106 5.68861C 0.633349 3.24119 2.51683 1 5.00135 1L 5.00135 -1ZM 4.33378 36.0329C 4.83564 38.9046 7.329 41 10.2442 41L 10.2442 39C 8.30074 39 6.6385 37.6031 6.30392 35.6886L 4.33378 36.0329ZM 76.8027 41C 79.7179 41 82.2112 38.9046 82.7131 36.0329L 80.743 35.6886C 80.4084 37.6031 78.7461 39 76.8027 39L 76.8027 41ZM 87.9559 6.03292C 88.5975 2.36179 85.7723 -1 82.0455 -1L 82.0455 1C 84.53 1 86.4135 3.24119 85.9858 5.68861L 87.9559 6.03292Z', fill:'#E0E0E0'},
-  ]
+      </Svg>
+      <View style={s.label }>
+        {!ebwuOn
+          ? <View style={row}>
+              <Text style={s.text}>not connected </Text>
+            </View>
+          : mode=='none'
+            ? null
+            : mode==='single'
+              ? <Text>You</Text>
+              :  <View style={s.dual}>
+                  <Text>{ side ==='A' ? 'Partner' : 'You'}</Text>
+                  <Text>{ side ==='A' ? 'You' : 'Partner'}</Text>
+                 </View>
 
 
-  return <View style={style}>    
-    <Svg width={width || 249} height={height || 317} viewBox="0 0 270 317">
-      <G y='10' id='frame'>
-        {frameConfig.map( (d,i) => <Path fill='white' key={i}  {...d} />  )}
-        <Text x='50' y='130' fontSize={40} fontWeight='bold' fill={blue} >A</Text>
-        <Text x='170' y='130' fontSize={40} fontWeight='bold' fill={blue} >B</Text>
-        { sheetState==='10' ?  <SideB  />: null}
-        { sheetState==='01' ?  <SideA  />: null}
-        { sheetState==='11' ?  <SideA  />: null}
-        { sheetState==='11' ?  <SideB  />: null}
-
-
-      </G>
-      <G x='80' id='pillow' >
-        {pillowConfig.map( (d,i) => <Path key={i}  {...d} />  )}
-        <Text x='25' y='8' fontSize={20} fontWeight='bold'  fill={blue}>hob</Text>
-      </G>
-    </Svg>
-  </View>
+        }
+      </View>
+      { ebwuOn && mode==='dual'
+        ? <TouchableOpacity  activeOpacity={.5} style={s.swap} onPress={()=>swapSides()}>
+            <Svg width={20} height={40}>
+              <G>
+                {left.map( (d,i)=><Path  y={8} key={i}  fill={blue} {...d}/> )}
+                {right.map( (d,i)=><Path y={20} key={i}  fill={blue} {...d}/> )}
+              </G>
+            </Svg>
+          </TouchableOpacity>
+        : null
+      }
+    </View>
 
 }

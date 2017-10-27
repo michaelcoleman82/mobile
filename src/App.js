@@ -1,18 +1,19 @@
 import React, {Component} from 'react'
-import {View, Text, StyleSheet, StatusBar, TouchableOpacity} from 'react-native'
+import {View, StyleSheet, StatusBar, TouchableOpacity} from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import Svg, { Path } from "react-native-svg"
-import { NativeRouter, Switch, Route, Link } from 'react-router-native'
-import {Schedule, Home} from './routes'
+import Svg, { Path, Circle } from "react-native-svg"
+import { NativeRouter, Switch, Route, Link, withRouter } from 'react-router-native'
+import {BedSettings, Home, AlarmSettings, UserSettings} from './routes'
 import {brand as ds} from './path-descriptions'
-import {BackButton} from './components'
+import {BackButton, Text} from './components'
 const {palette:{navy,blue, sunshine}, layout:{row}} = require('./styles')
 
 
 
 const Brand = ({width, height, style, connected}) => {
   return <Link component={TouchableOpacity} style={style} to='/'>
+  {console.log(connected, '---connected')}
     <Svg width={width || 140} height={height || 32} viewBox="0 0 140 32">
       {ds.map( (d, i) =>
          <Path  key={i} fill={connected ? sunshine: 'white'} {...d} />
@@ -22,11 +23,31 @@ const Brand = ({width, height, style, connected}) => {
 
 }
 
-const AppBar = (props)=>{
+
+const SettingsButton = withRouter( ({history:{push}})=>{
+  const s = StyleSheet.create({})
+  return <TouchableOpacity onPress={()=>push('/user-settings')}  style={{marginLeft:20}}>
+    {[...Array(3)].map( (_,i) => <Svg  key={i} width={6} height={6}>
+      <Circle cx={3} cy={3} r={1.5}  fill='white'/>
+    </Svg>
+    )}
+  </TouchableOpacity>
+})
+
+
+const BarButton = withRouter( ({label, history:{goBack}})=>{
+  const s = StyleSheet.create({})
+  return <TouchableOpacity onPress={()=> goBack()}>
+    <Text>{label}</Text>
+  </TouchableOpacity>
+})
+
+const AppBar = ({pathname})=>{
   const s = StyleSheet.create({
     container:{
       flex:1,
       ...row,
+      justifyContent:'space-between',
     },
     text:{
       color:'white',
@@ -36,7 +57,13 @@ const AppBar = (props)=>{
     },
   })
   return <View style={s.container}>
-    <BackButton to='/' />
+    { pathname==='/'
+      ? <View/>
+      : pathname==='/user-settings'
+        ?  <BarButton label='Cancel' />
+        : <BackButton to='/'   />
+    }
+    {pathname==='/user-settings' ? <BarButton label='Save' />   :  <SettingsButton />}
   </View>
 }
 
@@ -47,9 +74,9 @@ const Layout = ({children, connected, location:{pathname}})=>{
       alignSelf:'center',
     },
   })
-  return <View>
+  return <View style={{flex:1}}>
     <View style={{height:50}}>
-      {pathname =='/' && <AppBar/>}
+      <AppBar {...{pathname}}/>
     </View>
     <Brand  {...{connected, style:s.brand}} />
     {children}
@@ -78,8 +105,9 @@ export default ({sheetState, connected})=>{
 
         <Switch>
           <Layout connected={connected} >
-            <Route exact path='/' component={Schedule}/>
-            {/* <Route  path='/schedule' component={Schedule}/> */}
+            <Route exact path='/' component={Home}/>
+            <Route  path='/bed-settings' component={BedSettings}/>
+            <Route  path='/user-settings' component={UserSettings}/>
           </Layout>
         </Switch>
 
