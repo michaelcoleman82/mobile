@@ -112,7 +112,7 @@ export default class extends Component{
   style = StyleSheet.create({
     container:{
       alignItems: 'center',
-      marginTop: '15%',
+      marginTop: '20%',
     }
   })
 

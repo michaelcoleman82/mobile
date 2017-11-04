@@ -68,3 +68,4 @@ index.ios.js
 .buckconfig
 .watchmanconfig
 .gitattributes
+*.keystore

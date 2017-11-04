@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
-  Image
+  Image,
+  AsyncStorage,
 } from 'react-native'
 import App from './src/App'
 const {AWSIoTData:{device}} = require('./aws-iot-device-sdk-js-react-native')
@@ -40,11 +41,33 @@ export default class EBWU extends Component {
   }
 
 
-  state = {sheetState:'', connected:false}
+  state = {
+    sheetState:'',
+    connected:false,
+    time:'',
+
+  }
+
+  componentDidMount = async () =>{
+    this.setState({
+      time: await AsyncStorage.getItem('time') || this.state.time,
+
+    })
+  }
+
+  saveTime = async (key, value)=> {
+      this.setState({[key]:value})
+      await AsyncStorage.setItem(
+        key,
+        typeof(value)==='string'
+          ? value
+          : JSON.stringify(value)
+      )
+  }
 
   render() {
-    const {sheetState, connected} = this.state
-    return <App {...{connected, sheetState}}/>
+    const {sheetState, connected, time} = this.state
+    return <App saveTime={this.saveTime} {...{connected, sheetState, time}}/>
   }
 }
 
