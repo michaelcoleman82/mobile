@@ -39,7 +39,7 @@ export default ({
   })
 
 
-  const playTone = tone => 
+  const playTone = tone =>
     Object.keys(toneMap).map( key =>
       key===tone  ? toneMap[key].play()  : toneMap[key].setCurrentTime(0).pause()
   )

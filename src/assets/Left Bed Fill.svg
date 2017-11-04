@@ -1,0 +1,12 @@
+<svg width="90" height="180" viewBox="0 0 90 180" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Left Bed Fill</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(-80 -200)">
+<g id="Left Bed Fill">
+<use xlink:href="#path0_fill" transform="translate(80 200)" fill="#FFFFFF" fill-opacity="0.5"/>
+</g>
+</g>
+<defs>
+<path id="path0_fill" d="M 0 10C 0 4.47715 4.47715 0 10 0L 90 0L 90 180L 10 180C 4.47715 180 0 175.523 0 170L 0 10Z"/>
+</defs>
+</svg>

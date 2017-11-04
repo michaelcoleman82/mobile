@@ -304,6 +304,7 @@ export default class extends Component{
 
   views =()=>{
     const {mainMenu, timePicker, tonePicker} = this.props
+    const {tones} = this.state
 
 
     return [
