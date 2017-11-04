@@ -10,10 +10,3 @@ export const layout ={
     flexDirection:'row',
   }
 }
-
-export const typography ={
-  p:{
-    fontFamily: 'Montserrat-Light',
-    color:'white',
-  }
-}

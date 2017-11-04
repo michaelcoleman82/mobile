@@ -1,3 +1,6 @@
-export {default as home } from './home.json'
 export {default as brand } from './brand.json'
-export {default as bed } from './bed.json'
+export {default as arrow } from './arrow.json'
+export {default as arrowRight } from './arrowRight.json'
+export {default as home } from './home.json'
+export {default as user } from './user.json'
+export {default as note } from './note.json'

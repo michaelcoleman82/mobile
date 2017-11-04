@@ -1,117 +1,106 @@
-import React, {Component} from 'react'
-import {View, StyleSheet, StatusBar, TouchableOpacity} from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
-import Icon from 'react-native-vector-icons/FontAwesome'
-import Svg, { Path, Circle } from "react-native-svg"
-import { NativeRouter, Switch, Route, Link, withRouter } from 'react-router-native'
-import {BedSettings, Home, AlarmSettings, UserSettings} from './routes'
-import {brand as ds} from './path-descriptions'
-import {BackButton, Text} from './components'
-const {palette:{navy,blue, sunshine}, layout:{row}} = require('./styles')
+import React, { Component } from 'react'
+import {AsyncStorage} from 'react-native'
+import Layout from './Layout'
+import Sound from 'react-native-sound'
+const {AWSIoTData:{device}} = require('../aws-iot-device-sdk-js-react-native')
+Sound.setCategory('Playback')
 
 
+console.ignoredYellowBox = ['Setting a timer']
 
-const Brand = ({width, height, style, connected}) => {
-  return <Link component={TouchableOpacity} style={style} to='/'>
-  {console.log(connected, '---connected')}
-    <Svg width={width || 140} height={height || 32} viewBox="0 0 140 32">
-      {ds.map( (d, i) =>
-         <Path  key={i} fill={connected ? sunshine: 'white'} {...d} />
-       )}
-    </Svg>
-  </Link>
-
-}
-
-
-const SettingsButton = withRouter( ({history:{push}})=>{
-  const s = StyleSheet.create({})
-  return <TouchableOpacity onPress={()=>push('/user-settings')}  style={{marginLeft:20}}>
-    {[...Array(3)].map( (_,i) => <Svg  key={i} width={6} height={6}>
-      <Circle cx={3} cy={3} r={1.5}  fill='white'/>
-    </Svg>
-    )}
-  </TouchableOpacity>
-})
-
-
-const BarButton = withRouter( ({label, history:{goBack}})=>{
-  const s = StyleSheet.create({})
-  return <TouchableOpacity onPress={()=> goBack()}>
-    <Text>{label}</Text>
-  </TouchableOpacity>
-})
-
-const AppBar = ({pathname})=>{
-  const s = StyleSheet.create({
-    container:{
-      flex:1,
-      ...row,
-      justifyContent:'space-between',
-    },
-    text:{
-      color:'white',
-      fontWeight:'100',
-      marginLeft: 10,
-      marginTop:-2.5,
-    },
+const subscribe =  cb =>
+  fetch('https://1x9x7zmvd6.execute-api.us-east-1.amazonaws.com/dev/get-keys')
+  .then( res =>  res.ok ?  res.json() : Promise.reject('no dice'))
+  .then( keys =>{
+    const client = device({
+      clientId: 'app',
+      protocol:'wss',
+      ...keys
+    })
+    client.on('connect', ()=> {
+      cb(null, true)
+      client.subscribe('sheet_state') //change to mvp
+    })
+    client.on('message', (_, message)=> cb(String.fromCharCode(...message)) )
+    client.on('error', err => console.error(err))
   })
-  return <View style={s.container}>
-    { pathname==='/'
-      ? <View/>
-      : pathname==='/user-settings'
-        ?  <BarButton label='Cancel' />
-        : <BackButton to='/'   />
-    }
-    {pathname==='/user-settings' ? <BarButton label='Save' />   :  <SettingsButton />}
-  </View>
-}
 
 
-const Layout = ({children, connected, location:{pathname}})=>{
-  const s = StyleSheet.create({
-    brand:{
-      alignSelf:'center',
+
+
+export default class extends Component {
+
+  constructor() {
+    super()
+    subscribe(
+      (sheetState, connected) => sheetState
+        ? this.setState({sheetState})
+        : connected
+          ? this.setState({connected})
+          : null
+
+    )
+  }
+
+
+  state={
+    sheetState:null,
+    connected:false,
+    toneMap:{
+      'Sunshine': new Sound('sunshine.mp3', Sound.MAIN_BUNDLE),
+      'Beep Beep': new Sound('beep.mp3', Sound.MAIN_BUNDLE),
+      'Morning Song': new Sound('morning.mp3', Sound.MAIN_BUNDLE),
+      'Ring Tone': new Sound('ring.mp3', Sound.MAIN_BUNDLE),
+      'Chimes': new Sound('chimes.mp3', Sound.MAIN_BUNDLE),
+      'Rap Beat': new Sound('beat.mp3', Sound.MAIN_BUNDLE),
     },
+    time:'--:--',
+    side:'A',
+    mode:'single',
+    daysOfWeek:[],
+    volume:.5,
+    tone:'Sunshine',
+  }
+
+
+
+  componentWillMount = async () =>this.setState({
+    daysOfWeek: JSON.parse(await AsyncStorage.getItem('daysOfWeek'))  || this.state.daysOfWeek,
+    side: await AsyncStorage.getItem('side') || this.state.side,
+    mode: await AsyncStorage.getItem('mode') || this.state.mode,
+    volume: await AsyncStorage.getItem('volume') || this.state.volume,
+    tone: await AsyncStorage.getItem('tone') || this.state.tone,
+    time: await AsyncStorage.getItem('time') || this.state.time,
   })
-  return <View style={{flex:1}}>
-    <View style={{height:50}}>
-      <AppBar {...{pathname}}/>
-    </View>
-    <Brand  {...{connected, style:s.brand}} />
-    {children}
-  </View>
-}
 
 
-export default ({sheetState, connected})=>{
-  const s = StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingLeft: 30,
-      paddingRight: 30,
-    }
-  });
+  save = async (key, value)=> {
+      this.setState({[key]:value})
+      await AsyncStorage.setItem(
+        key,
+        typeof(value)==='string'
+          ? value
+          : JSON.stringify(value)
+      )
+  }
 
-  const colors = [navy, '#666D89', blue, '#FFECCE']
-  const locations = [0, .47, .65, 1]
 
-  return <LinearGradient
-      {...{colors, locations}}
-      style={s.container}
-    >
-    <StatusBar backgroundColor={navy}/>
-    <NativeRouter>
+  getAllChoices = name => choice =>
+    this.state[name].indexOf(choice)==-1
+      ? this.save(name, [...this.state[name], choice])
+      : this.save(name, this.state[name].filter( c=> c!=choice ) )
 
-        <Switch>
-          <Layout connected={connected} >
-            <Route exact path='/' component={Home}/>
-            <Route  path='/bed-settings' component={BedSettings}/>
-            <Route  path='/user-settings' component={UserSettings}/>
-          </Layout>
-        </Switch>
 
-    </NativeRouter>
-    </LinearGradient>
+  getOneChoice = name => choice =>
+    this.save(name,  choice==this.state[name] ?  this.state[name] :  choice )
 
+
+  render() {
+    return <Layout {...{
+      save:this.save,
+      getAllChoices: this.getAllChoices,
+      getOneChoice:this.getOneChoice,
+      ...this.state
+    }} />
+  }
 }

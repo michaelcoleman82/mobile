@@ -1,5 +1,5 @@
 {
-	"name": "EBWU",
+	"name": "ebwu",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -8,22 +8,22 @@
 		"push": "git add -A && git commit -m \"$msg\" && git push"
 	},
 	"dependencies": {
-		"moment": "^2.19.1",
-		"react": "16.0.0-alpha.12",
-		"react-native": "0.48.4",
-		"react-native-simple-time-picker": "^0.2.0",
-		"react-native-svg": "^5.4.2",
-		"react-native-vector-icons": "^4.4.2",
-		"react-router-native": "^4.2.0"
+		"react": "16.0.0-beta.5",
+		"react-native": "0.49.5"
 	},
 	"devDependencies": {
-		"aws-sdk": "^2.126.0",
 		"babel-jest": "21.2.0",
 		"babel-preset-react-native": "4.0.0",
 		"jest": "21.2.1",
+		"react-native-sound": "git+https://github.com/zmxv/react-native-sound#f28be771cc728366ddb14f07bbe863fd40879cac",
+		"react-native-svg": "^5.4.2",
+		"react-native-vector-icons": "^4.4.2",
+		"react-router-native": "^4.2.0",
+		"serverless": "^1.23.0",
 		"react-native-linear-gradient": "^2.3.0",
-		"react-test-renderer": "16.0.0-alpha.12",
-		"serverless": "^1.23.0"
+		"moment": "^2.19.1",
+		"serverless": "^1.23.0",
+		"react-test-renderer": "16.0.0-beta.5"
 	},
 	"jest": {
 		"preset": "react-native"

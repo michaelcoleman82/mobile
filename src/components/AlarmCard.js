@@ -3,8 +3,13 @@ import {View, StyleSheet, Slider, TouchableOpacity,ScrollView  } from 'react-nat
 import Svg, {Circle, Polyline, Path, G} from 'react-native-svg'
 import {Text, BackButton, VertRadioGroup} from '.'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import d from '../path-descriptions/bed-settings.json'
+import {note} from '../path-descriptions'
+import Sound from 'react-native-sound'
+
 const {layout:{row}, palette:{blue, navy}} = require('../styles')
+
+Sound.setCategory('Playback')
+
 
 
 const ClockIndicator = props => <Svg {...props} >
@@ -13,7 +18,6 @@ const ClockIndicator = props => <Svg {...props} >
     <Polyline
       points={[46, 15, 46, 46, 15, 46,]}
       fill='none'
-
       stroke= 'white'
       strokeWidth={2}
       strokeLinecap="round"
@@ -68,7 +72,7 @@ const MainMenu = ({time, tone, volume, options,choice, getDaysofWeek, changeView
     },
     week:{
       ...row,
-      margin:5,
+      margin:10,
     },
     icon:{
       marginLeft:-5,
@@ -76,8 +80,6 @@ const MainMenu = ({time, tone, volume, options,choice, getDaysofWeek, changeView
       fontSize:20
     }
   })
-
-
 
   return <View style={s.container} >
       <View style={s.week}>
@@ -99,12 +101,12 @@ const MainMenu = ({time, tone, volume, options,choice, getDaysofWeek, changeView
         <View style={s.right}>
 
           <TouchableOpacity onPress={()=> changeView(1)} >
-            <Text style={s.time}>{time}</Text>
+            <Text style={s.time}>{time || '--:--'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity  onPress={()=> changeView(2)} style={[row, {marginTop:10}]}>
             <Svg width={20} height={20}>
-              <Path d={d.music} fill='white' />
+              <Path d={note.d} fill='white' />
             </Svg>
             <Text style={s.tone} >{tone}</Text>
           </TouchableOpacity>
@@ -146,8 +148,8 @@ class TimePicker extends Component{
     },
     time:{
       flexDirection:'row',
-      width:160,
-      marginLeft:50,
+      width:180,
+      marginLeft:40,
       height:180,
     }
   })
@@ -159,14 +161,14 @@ class TimePicker extends Component{
     const height = 45.7
     this.setState({offset: y})
     if (  y > offset){
-      if( y <Math.round(y/height)*height  ){
-         time.scrollTo({y: Math.round(y/height)*height })
+      if( y <Math.round(y/height)*height   ){
+        //  time.scrollTo({y: Math.round(y/height)*height })
          this.setState({[key]:  Math.round(y/height)})
        }
 
     } else{
-      if( y >  Math.round(y/height)*height-height && y< Math.round(y/height)*height  ){
-        time.scrollTo({y:Math.round(y/height)*height-height })
+      if( y >  Math.round(y/height)*height-height && y< Math.round(y/height)*height   ){
+        // time.scrollTo({y:Math.round(y/height)*height-height })
         this.setState({[key]:  Math.round(y/height)-1 })
       }
     }
@@ -191,7 +193,7 @@ class TimePicker extends Component{
 
       <View style={time}>
         <ScrollView onScroll={this.handleScroll(_hours,'hours')} ref='_hours'>
-          <View style={{height:60}}   />
+          <View style={{height:60, width:70}}   />
           {[...Array(12)].map( (_,i) =>
             <Text key={i}
               style={[text,
@@ -208,7 +210,7 @@ class TimePicker extends Component{
           <Text style={text}> : </Text>
         </View>
         <ScrollView  onScroll={this.handleScroll(_mins, 'mins')} ref='_mins'>
-          <View style={{height:60}}   />
+          <View style={{height:60, width:60}}   />
           {[...Array(60)].map(  (_,i) =>
              <Text  key={i}
                style={[text,
@@ -225,6 +227,7 @@ class TimePicker extends Component{
             <Text key={i}
               style={[
                 text,
+                {width:70},
                 i===meridiem && {opacity:1}
               ]}
             >
@@ -238,7 +241,7 @@ class TimePicker extends Component{
 }
 
 
-const TonePicker = ({changeView, ...props})=>{
+const TonePicker = ({changeView, toneMap, ...props})=>{
   const s = StyleSheet.create({
     container:{
       margin:15,
@@ -251,15 +254,20 @@ const TonePicker = ({changeView, ...props})=>{
     }
   })
 
+  const handleBackPress = ()=>{
 
+    Object.keys(toneMap).map( key =>  toneMap[key].pause() )
+    // tones.map( t=> t.pause()  )
+    changeView(0)
+  }
 
   return <View style={s.container}>
-    <BackButton onPress={()=>changeView(0)}/>
+    <BackButton onPress={handleBackPress}/>
     <View style={{height:120}}>
 
       <ScrollView style={s.scroll}>
 
-        <VertRadioGroup style={{alignSelf:'center'}} {...props}   />
+        <VertRadioGroup style={{alignSelf:'center'}}    {...{toneMap,...props}}   />
       </ScrollView>
     </View>
   </View>
@@ -267,7 +275,9 @@ const TonePicker = ({changeView, ...props})=>{
 
 
 export default class extends Component{
-  state={viewIndex:0}
+  state={
+    viewIndex:0
+  }
 
   style = StyleSheet.create({
     container:{
@@ -287,14 +297,19 @@ export default class extends Component{
       bottom:0,
     },
   })
+
+
+
   changeView = viewIndex  => this.setState({viewIndex})
+
   views =()=>{
     const {mainMenu, timePicker, tonePicker} = this.props
+
 
     return [
       <MainMenu  {...mainMenu} changeView={this.changeView}/>,
       <TimePicker  {...timePicker} changeView={this.changeView}/>,
-      <TonePicker  {...tonePicker} changeView={this.changeView}/>,
+      <TonePicker   {...tonePicker} changeView={this.changeView}/>,
     ]
   }
 

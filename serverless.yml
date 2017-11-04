@@ -16,7 +16,7 @@ provider:
 
 functions:
   auth:
-    handler: user-services/index.getKeys
+    handler: services/index.getKeys
     events:
       - http:
           path: /get-keys

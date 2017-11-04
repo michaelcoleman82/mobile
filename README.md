@@ -3,20 +3,40 @@
 ## Prerequisites
 - [Native Android Environment](https://facebook.github.io/react-native/docs/getting-started.html)
 
+
+# File Tree
+```python
+src/
+├── App.js  # User input state and networking
+├── Layout.js  # Modal and alarm status state
+├── components/  # Reusable components  
+├── path-descriptions/ # SVG path description data
+├── routes/ # Screen size components.
+└── styles.js # Reusable styles
+```
+
+# Component Tree
+
+
+
 # Components API: Props
+
+
+
 
 ### Quick Reference for Component Details
 
 
-[`<Dropdown />`](#Dropdown) |   [`<Clock />`](#Table)  | [`<Modal />`](#Modal)
+
+
+[`<Bed />`](#Bed) |   [`<Clock />`](#Table)  | [`<TimePicker />`](#TimePicker)
 --- | --- | ---
-[`<Button />`](#Button) |   [`<TextInput />`](#TextInput)  | [`<Checkbox />`](#Checkbox)
+[`<VertRadioGroup />`](#VertRadioGroup) |   [`<Modal />`](#Modal)  | [`<Header />`](#Header)
 
 
 
-## `<Dropdown />`
 ## `<Clock />`
+## `<Bed />`
+## `<TimePicker />`
 ## `<Modal />`
-## `<Button />`
-## `<TextInput />`
-## `<Checkbox />`
+## `<Header />`
