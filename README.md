@@ -2,6 +2,8 @@
 
 ## Prerequisites
 - [Native Android Environment](https://facebook.github.io/react-native/docs/getting-started.html)
+- [React Native SVG](https://github.com/react-native-community/react-native-svg)
+- [React Native Sound](https://github.com/zmxv/react-native-sound)
 
 
 # File Tree
@@ -21,22 +23,10 @@ src/
 
 # Components API: Props
 
-
-
-
-### Quick Reference for Component Details
-
-
-
-
-[`<Bed />`](#Bed) |   [`<Clock />`](#Table)  | [`<TimePicker />`](#TimePicker)
---- | --- | ---
-[`<VertRadioGroup />`](#VertRadioGroup) |   [`<Modal />`](#Modal)  | [`<Header />`](#Header)
-
-
-
 ## `<Clock />`
 ## `<Bed />`
 ## `<TimePicker />`
 ## `<Modal />`
 ## `<Header />`
+
+# Business Logic
