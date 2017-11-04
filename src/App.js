@@ -91,7 +91,7 @@ export default class extends Component {
       : this.save(name, this.state[name].filter( c=> c!=choice ) )
 
 
-<<<<<<< HEAD
+
   getOneChoice = name => choice =>
     this.save(name,  choice==this.state[name] ?  this.state[name] :  choice )
 
@@ -103,42 +103,5 @@ export default class extends Component {
       getOneChoice:this.getOneChoice,
       ...this.state
     }} />
-=======
-  getOneChoice = name => choice => name==='time'
-    ? this.props.saveTime(name,  choice==this.state[name] ?  this.state[name] :  choice )
-    : this.save(name,  choice==this.state[name] ?  this.state[name] :  choice )
-
-  bedConfig ={
-      save:this.save,
-      getOneChoice: this.getOneChoice,
-      getAllChoices:this.getAllChoices,
-  }
-
-  gradient = {
-    colors: [navy, '#666D89', blue, '#FFECCE'],
-    locations: [0, .47, .65, 1]
-  }
-
-  render (){
-
-    const {sheetState, time} = this.props
-    const {container} = this.style
-    const {modal} = this.state
-
-    return <LinearGradient
-        {...this.gradient}
-        style={container}
-      >
-        <NativeRouter>
-          <Switch>
-          <Layout  connected={true} modal={modal} closeModal={this.closeModal} >
-            <Route exact path='/' component={Home}/>
-            <Route  path='/bed-settings' render={props => <BedSettings  {...this.bedConfig} {...this.state} time={time}  {...props}/>}/>
-            <Route  path='/user-settings' render={props => <UserSettings {...props}  sheetState={sheetState} />}/>
-          </Layout>
-        </Switch>
-      </NativeRouter>
-    </LinearGradient>
->>>>>>> e25cfa06be918e174bacf96ae7e74f40a17fb08e
   }
 }
